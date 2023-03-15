@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Include the Google Fonts-->
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+	<!-- Include the PayPal JavaScript SDK -->
+	<script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
+	<!-- Include the CSS Styles -->
     <link rel="stylesheet" href="styles.css">
     <title>Donate</title>
 </head>
+
 <body>
 	<header>
 		<nav>
@@ -21,16 +26,47 @@
 		</nav>
 	</header>
 
-	<div class="donate-container">
-		<div class="donate-box">
-			<h2>Donate to the Leukemia and Lymphoma Society</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi euismod ultrices malesuada.</p>
-			<button>Donate</button>
-		</div>
+	<div id="donate-main-container">
+		<div class="donate-block">
+			<div id="paypal-donate-button-container"></div>
 
-		<div class="donate-box">
-			
+			<script>
+				PayPal.Donation.Button({
+				
+				style: {
+					shape: 'rect',
+					color: 'gold',
+					layout: 'vertical',
+					label: 'paypal',
+					tagline: false
+				},
+				createOrder: function(data, actions) {
+					return actions.order.create({
+						purchase_units: [{
+							amount: {
+								value: document.getElementById("donation-amount").value
+							}
+						}]
+					});
+				},
+				onApprove: function(data, actions) {
+					return actions.order.capture().then(function(details) {
+						alert('Transaction completed by ' + details.payer.name.given_name + '!');
+					});
+				}
+				}).render('#paypal-donate-button-container');
+
+			</script>
+
+			<div id="personal-donate">
+				<h2>Personal Donation</h2>
+				<p>Enter the amount you want to donate (minimum $1):</p>
+				<input type="number" id="donation-amount" min="1" step="0.01" placeholder="Enter amount">
+				<button id="donate-button">Donate</button>
+			</div>
 		</div>
 	</div>
+    
+	
 </body>
 </html>
